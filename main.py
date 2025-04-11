@@ -1,5 +1,5 @@
 import cv2
-from detector.hazmat_detector import detect_hazmats
+from detector.orb_hazmat_detector import detect_hazmats
 from detector.barrel_detector import detect_barrels
 from utils.draw_utils import draw_detections
 
