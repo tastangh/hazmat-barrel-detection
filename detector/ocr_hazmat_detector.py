@@ -1,5 +1,5 @@
 import cv2
-from detector.orb_hazmat_detector import detect_hazmats
+from detector.ocr_hazmat_detector import detect_hazmats  # << DEĞİŞTİ!
 from detector.barrel_detector import detect_barrels
 from utils.draw_utils import draw_detections
 
@@ -29,9 +29,12 @@ def main(video_path):
         frame = draw_detections(frame, combined)
         cv2.imshow("Tespit", frame)
 
-        key = cv2.waitKey(0 if new_detections else 1)
-        if key == ord('q'):
-            break
+        if new_detections:
+            if cv2.waitKey(0) == ord('q'):
+                break
+        else:
+            if cv2.waitKey(1) == ord('q'):
+                break
 
         frame_idx += 1
 
@@ -41,6 +44,6 @@ def main(video_path):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--video", type=str, required=True, help="Video dosyası (örn: ./data/tusas-odev1.mp4)")
+    parser.add_argument("--video", type=str, required=True, help="Video dosya yolu (örn: ./data/tusas-odev1.mp4)")
     args = parser.parse_args()
     main(args.video)
