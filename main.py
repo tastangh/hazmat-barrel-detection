@@ -1,59 +1,34 @@
 import cv2
-from detector.orb_hazmat_detector import detect_hazmats
-from detector.barrel_detector import detect_barrels
+from utils.video_utils import get_video_frames
 from utils.draw_utils import draw_detections
+from detector.hazmat_detector import detect_hazmats
+from detector.barrel_detector import detect_barrels
 
-DETECTED_OBJECTS = set()
+video_path = "./data/tusas-odev1.mp4"
+frames = get_video_frames(video_path)
 
-def main(video_path):
-    cap = cv2.VideoCapture(video_path)
-    frame_idx = 0
+detected_labels = set()
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+for i, frame in enumerate(frames):
+    hazmats = detect_hazmats(frame)
+    barrels = detect_barrels(frame)
+    all_detections = hazmats + barrels
 
-        # 1️⃣ Varil tespiti her karede çalışsın (hafif)
-        barrels = detect_barrels(frame)
+    # Yeni tespit varsa duraklat
+    new_detected = []
+    for label, _ in all_detections:
+        if label not in detected_labels:
+            print(f"[FRAME {i}] Yeni Tespit: {label}")
+            new_detected.append(label)
+            detected_labels.add(label)
 
-        # 2️⃣ Hazmat tespiti sadece her 5. karede çalışsın (ağır)
-        if frame_idx % 5 == 0:
-            hazmats = detect_hazmats(frame)
-        else:
-            hazmats = []
+    if new_detected:
+        frame = draw_detections(frame, all_detections)
+        cv2.imshow("Tespitler", frame)
+        cv2.waitKey(0)  # kullanıcı tuşuna kadar bekle
+    else:
+        frame = draw_detections(frame, all_detections)
+        cv2.imshow("Tespitler", frame)
+        cv2.waitKey(1)  # hızlı geç
 
-        combined = hazmats + barrels
-        new_detections = []
-
-        for label, (x, y, w, h) in combined:
-            if label not in DETECTED_OBJECTS:
-                DETECTED_OBJECTS.add(label)
-                print(f"[+] Tespit: {label}")
-                new_detections.append((label, (x, y, w, h)))
-
-        # 3️⃣ Tüm tespitleri çiz
-        frame = draw_detections(frame, combined)
-        cv2.imshow("Tespit", frame)
-
-        # 4️⃣ Duraksama: sadece yeni tespit varsa
-        if new_detections:
-            key = cv2.waitKey(0)
-            if key == ord('q'):
-                break
-        else:
-            key = cv2.waitKey(1)  # ⚡️ 1ms bekleme ile hızlı oynatma
-            if key == ord('q'):
-                break
-
-        frame_idx += 1
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--video", type=str, required=True, help="Video dosya yolu (örn: ./data/odev1-tusas.mp4)")
-    args = parser.parse_args()
-    main(args.video)
+cv2.destroyAllWindows()

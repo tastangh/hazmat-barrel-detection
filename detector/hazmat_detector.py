@@ -1,8 +1,9 @@
 import cv2
 import os
+import numpy as np
 
 TEMPLATE_DIR = "./data/hazmats"
-orb = cv2.ORB_create(nfeatures=1000)  # Daha fazla keypoint için
+TEMPLATE_SCALES = [0.8, 1.0, 1.2]
 
 def load_templates():
     templates = []
@@ -10,40 +11,32 @@ def load_templates():
         if filename.endswith(".png") or filename.endswith(".jpg"):
             label = os.path.splitext(filename)[0]
             path = os.path.join(TEMPLATE_DIR, filename)
-            img = cv2.imread(path, 0)
+            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
             if img is not None:
-                keypoints, descriptors = orb.detectAndCompute(img, None)
-                templates.append((label, img, keypoints, descriptors))
-    print(f"[DEBUG] {len(templates)} adet ORB template yüklendi.")
+                templates.append((label, img))
+    print(f"[DEBUG] {len(templates)} adet hazmat template yüklendi.")
     return templates
 
 TEMPLATES = load_templates()
 
-bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-
 def detect_hazmats(frame):
     detections = []
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    keypoints_scene, descriptors_scene = orb.detectAndCompute(gray, None)
+    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    if descriptors_scene is None:
-        return []
+    for label, template in TEMPLATES:
+        found = False
+        for scale in TEMPLATE_SCALES:
+            resized_template = cv2.resize(template, (0, 0), fx=scale, fy=scale)
+            res = cv2.matchTemplate(gray_frame, resized_template, cv2.TM_CCOEFF_NORMED)
+            _, max_val, _, max_loc = cv2.minMaxLoc(res)
 
-    for label, template_img, keypoints_template, descriptors_template in TEMPLATES:
-        if descriptors_template is None:
-            continue
-
-        matches = bf.match(descriptors_template, descriptors_scene)
-        matches = sorted(matches, key=lambda x: x.distance)
-
-        # Eşik: iyi eşleşme sayısı
-        good_matches = [m for m in matches if m.distance < 60]
-
-        print(f"[DEBUG] {label}: {len(good_matches)} eşleşme")
-
-        if len(good_matches) > 10:
-            # Tespit edildi kabul et, rectangle çiz (şu anlık tüm sahneye yayalım)
-            x, y, w, h = 50, 50, 200, 200  # Geçici sabit konum
-            detections.append((label, (x, y, w, h)))
-
+            if max_val > 0.65:
+                x, y = max_loc
+                h, w = resized_template.shape
+                detections.append((label, (x, y, w, h)))
+                print(f"[HAZMAT] {label} tespit edildi. Skor: {max_val:.2f}")
+                found = True
+                break
+        if not found:
+            print(f"[HAZMAT] {label} bulunamadı.")
     return detections
