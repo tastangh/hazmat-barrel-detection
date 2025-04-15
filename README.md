@@ -90,4 +90,4 @@ Tespitlerin üst üste binmesi durumunda en yüksek skora sahip kutunun korunmas
 Bu dosya, tüm sistemin ana çatısını oluşturmaktadır. `argparse` ile video ve log dosyası alınmakta, her frame’de varil tespiti, belirli aralıklarla da hazmat tespiti yapılmaktadır. Yeni bir nesne türü algılandığında video duraklatılır ve terminale bilgi basılır.
 
 ### 5. Sonuç
-Bu proje, bilgisayarla görme temelleri kullanılarak sahne analizi gerçekleştiren, gerçek zamanlı bir nesne tespiti sisteminin başarılı bir uygulamasıdır. Sistem, ödev yönergesindeki tüm gereklilikleri karşılamakta olup; modüler, genişletilebilir ve kullanıcı dostu bir yapıya sahiptir.
+Bu proje, bilgisayarla görme temelleri kullanılarak sahne analizi gerçekleştiren, gerçek zamanlı bir nesne tespiti sisteminin başarılı bir uygulamasıdır. 
