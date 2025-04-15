@@ -18,7 +18,7 @@ DARK_FRAME_THRESHOLD = 50
 try:
     sift = cv2.SIFT_create()
 except cv2.error as e:
-    print("[ERROR] SIFT not available. Ensure you have 'opencv-contrib-python' installed.")
+    print("[HATA] SIFT kullanılamıyor. Lütfen 'opencv-contrib-python' paketinin kurulu olduğundan emin olun.")
     exit()
 
 FLANN_INDEX_KDTREE = 1
@@ -30,9 +30,9 @@ CLAHE_OBJ = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
 def load_templates():
     templates = []
-    print(f"[INFO] Loading templates from: {os.path.abspath(TEMPLATE_DIR)}")
+    print(f"[BİLGİ] Şablonlar yükleniyor: {os.path.abspath(TEMPLATE_DIR)}")
     if not os.path.isdir(TEMPLATE_DIR):
-        print(f"[ERROR] Template directory not found: {TEMPLATE_DIR}")
+        print(f"[HATA] Şablon klasörü bulunamadı: {TEMPLATE_DIR}")
         return []
     for filename in os.listdir(TEMPLATE_DIR):
         if filename.lower().endswith((".png", ".jpg", ".jpeg")):
@@ -47,12 +47,12 @@ def load_templates():
             if des is None or len(des) < 2:
                 continue
             templates.append((label, img, kp, des))
-    print(f"[INFO] {len(templates)} hazmat templates loaded (SIFT).")
+    print(f"[BİLGİ] {len(templates)} hazmat şablonu yüklendi (SIFT).")
     return templates
 
 TEMPLATES = load_templates()
 
-# --- Matching Function ---
+# --- Eşleşme Fonksiyonu ---
 def match_template(template_tuple, kp_frame, des_frame):
     label, tmpl, kp_tmpl, des_tmpl = template_tuple
 
