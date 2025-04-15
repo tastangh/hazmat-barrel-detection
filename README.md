@@ -22,7 +22,7 @@ Bu proje, bir video akışında hazmat (tehlikeli madde) işaretlerini ve kırm�
 └── README.md                             # Bu döküman
 ```
 
-## 📦 Gereksinimler
+## Gereksinimler
 
 Python 3.8+ ve aşağıdaki kütüphaneler gereklidir:
 
@@ -30,7 +30,7 @@ Python 3.8+ ve aşağıdaki kütüphaneler gereklidir:
 pip install -r requirements.txt
 ```
 
-## 🚀 Çalıştırma
+## Çalıştırma
 
 Projenin ana dosyası `main.py`’dir. Aşağıdaki komut ile çalıştırılır:
 
