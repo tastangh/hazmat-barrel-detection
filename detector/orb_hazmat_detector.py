@@ -1,13 +1,10 @@
-# --- START OF FILE orb_hazmat_detector.py ---
-
 import cv2
 import os
 import numpy as np
-from utils.iou_nms import non_max_suppression # Import NMS
+from utils.iou_nms import non_max_suppression 
 
 TEMPLATE_DIR = "./data/hazmats"
 
-# --- Tunable Parameters --- Stricter Values ---
 KNN_RATIO = 0.6
 MIN_GOOD_MATCHES = 18
 MIN_RANSAC_INLIERS = 10
@@ -16,10 +13,8 @@ MIN_CONFIDENCE = 15
 MIN_ASPECT_RATIO = 0.7
 MAX_ASPECT_RATIO = 1.4
 NMS_THRESHOLD_HAZMAT = 0.25
-DARK_FRAME_THRESHOLD = 50  # optimized threshold
-# --- End Tunable Parameters ---
+DARK_FRAME_THRESHOLD = 50  
 
-# Initialize SIFT and FLANN
 try:
     sift = cv2.SIFT_create()
 except cv2.error as e:
@@ -28,13 +23,11 @@ except cv2.error as e:
 
 FLANN_INDEX_KDTREE = 1
 index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-search_params = dict(checks=30)  # Reduced from 50 to 30 for faster speed
+search_params = dict(checks=30) 
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
-# Precreate CLAHE object once
 CLAHE_OBJ = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
-# --- Load Templates ---
 def load_templates():
     templates = []
     print(f"[INFO] Loading templates from: {os.path.abspath(TEMPLATE_DIR)}")
@@ -106,7 +99,6 @@ def match_template(template_tuple, kp_frame, des_frame):
 
     return (label, (x, y, w, h), confidence_score)
 
-# --- Main Hazmat Detection Function ---
 def detect_hazmats(frame):
     if not TEMPLATES:
         return []
@@ -133,5 +125,3 @@ def detect_hazmats(frame):
 
     final_hazmat_detections = non_max_suppression(potential_detections, NMS_THRESHOLD_HAZMAT)
     return final_hazmat_detections
-
-# --- END OF FILE orb_hazmat_detector.py ---
