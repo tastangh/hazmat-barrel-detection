@@ -81,7 +81,7 @@ def main(video_path):
 
         new_detections_this_frame = combined_detections
         for label, box in combined_detections:
-            print(f"[*] >>>  Nesne Türü Tespit Edildi: {normalized_label} @ Frame {frame_idx}")
+            print(f"[*] >>>  Nesne Türü Tespit Edildi: {label} @ Frame {frame_idx}")
 
         # Frame üzerine kaçıncı frame olduğu bilgisi 
         cv2.putText(frame, f"Frame: {frame_idx}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
