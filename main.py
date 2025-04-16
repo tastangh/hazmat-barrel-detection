@@ -79,13 +79,9 @@ def main(video_path):
 
         combined_detections = hazmats + final_barrels  
 
-        new_detections_this_frame = []
+        new_detections_this_frame = combined_detections
         for label, box in combined_detections:
-            normalized_label = label 
-            if normalized_label not in DETECTED_OBJECTS:
-                DETECTED_OBJECTS.add(normalized_label)
-                print(f"[*] >>> Yeni Nesne Türü Tespit Edildi: {normalized_label} @ Frame {frame_idx}")
-                new_detections_this_frame.append((label, box))
+            print(f"[*] >>>  Nesne Türü Tespit Edildi: {normalized_label} @ Frame {frame_idx}")
 
         # Frame üzerine kaçıncı frame olduğu bilgisi 
         cv2.putText(frame, f"Frame: {frame_idx}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)

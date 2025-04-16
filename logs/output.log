@@ -79938,3 +79938,12 @@ Pause on New Detection: True
 
 [INFO] End of video stream.
 [INFO] Resources released.
+--- Tespit Scripti Başlatıldı ---
+Video Girdisi: ./data/tusas-odev1.mp4
+Log Dosyası: logs/output.log
+Hazmat Tespit Aralığı: 3 frame
+Varil/Hazmat Çakışma Eşiği (IoU): 0.2
+Yeni Tespitte Duraklat: True
+--------------------------------
+[BİLGİ] Video Özellikleri: 874x870 @ 30.00 FPS
+[*] >>> Yeni Nesne Türü Tespit Edildi: Mavi Varil @ Frame 126
