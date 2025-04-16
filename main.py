@@ -91,7 +91,7 @@ def non_max_suppression(boxes_scores_labels, overlapThresh):
 
     final_detections = [(labels[i], boxes[i]) for i in pick_indices]
     return final_detections
-    
+
 def setup_logger(log_path="log.txt"):
     log_dir = os.path.dirname(log_path)
     if log_dir and not os.path.exists(log_dir):
@@ -165,7 +165,7 @@ def main(video_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--video", type=str, default="video/test.mp4", help="Video dosya yolu")
+    parser.add_argument("--video", type=str, default="data/tusas-odev1.mp4", help="Video dosya yolu")
     args = parser.parse_args()
 
     setup_logger()
